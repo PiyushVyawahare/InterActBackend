@@ -1,0 +1,27 @@
+{
+  "name": "interactbackend",
+  "version": "1.0.0",
+  "description": "This is the backend on the InterActProject",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VarunPitty21/InterActBackend.git"
+  },
+  "author": "Varun Pitty",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VarunPitty21/InterActBackend/issues"
+  },
+  "homepage": "https://github.com/VarunPitty21/InterActBackend#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mailjet": "^0.0.1",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.2.0",
+    "nodemon": "^2.0.22",
+    "socket.io": "^4.6.1"
+  }
+}
