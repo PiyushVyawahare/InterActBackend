@@ -1,9 +1,18 @@
 const express = require('express');
 const app = express();
+const Users = require('./api/users');
+const db = require('./db');
 
-app.get('/', async (request, response) => {
-    return response.status(200).end('Welcome to server');
-})
+//--------------Requirements-----------//
+db.init();
+
+//-------------Middlewares-------------//
+app.use(express.json());
+
+
+//-------------routes------------------//
+app.use('/users', Users);
+
 
 app.listen(3000,() => {
     console.log('server started at 3000');
