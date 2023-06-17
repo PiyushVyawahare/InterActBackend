@@ -1,9 +1,10 @@
 const { aws } = require('../config');
 const awsSdk = require('aws-sdk');
+require('dotenv').config();
 
 const s3 = new awsSdk.S3({
-    accessKeyId: aws.access_key,
-    secretAccessKey: aws.secret_key,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
     signatureVersion: 'v4',
     region: 'ap-south-1',
 });
@@ -11,7 +12,7 @@ const s3 = new awsSdk.S3({
 module.exports = {
     uploadToS3: async (file_name, file_content) => {
         const params = {
-            Bucket: aws.bucket_name,
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: file_name,
             Body: file_content,
         };
@@ -33,7 +34,7 @@ module.exports = {
   deleteFileFromS3: async (file_name) => {
     
     const params = {
-      Bucket: aws.bucket_name,
+      Bucket: process.env.AWS_BUCKET_NAME,
       Key: file_name,
     };
 
@@ -52,7 +53,7 @@ module.exports = {
   dowloadFileFromS3: async (filePath) => {
     
     const download_params = {
-      Bucket: aws.bucket_name,
+      Bucket: process.env.AWS_BUCKET_NAME,
       Key: filePath,
     };
 
@@ -68,7 +69,7 @@ module.exports = {
     
     try {
       const url = await s3.getSignedUrlPromise('getObject', {
-        Bucket: aws.bucket_name,
+        Bucket: process.env.AWS_BUCKET_NAME,
         Key: filePath,
         Expires: 3600,
         ResponseContentType: 'image/png, image/jpg',

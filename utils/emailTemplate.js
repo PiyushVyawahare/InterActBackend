@@ -56,7 +56,7 @@ module.exports = async (verificationOtp) => {
         </head>
         <body>
             <div class="container">
-                <div style="display: flex; align-items: center;">
+                <div style="display: flex; background-color: #F1F6F9">
                     <img src="${src_temp}" alt="Image" style="min-width: 30%; height: 40px;">
                     <h1 style="margin-left: 10px">  :  Email Verification</h1> 
                 </div>
