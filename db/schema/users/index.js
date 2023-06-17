@@ -34,6 +34,7 @@ const userSchema = new Schema({
 
     is_verified: {
         type: Boolean,
+        default: false,
         required: true,
     },
 },
