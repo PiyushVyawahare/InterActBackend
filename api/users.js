@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
   if (is_duplicate) {
     if (is_duplicate.is_verified) return res.status(400).send({ message: 'User Already registered with us...' });
     else {
-      const flag1 = generateAndMailOTP(user_details, title);
+      const flag1 = generateAndMailOTP(is_duplicate, title);
       if (flag1) return res.status(200).send({ message: 'You are already registered. Please verify your email... OTP sent to your registered email' });
     }
   }
@@ -82,7 +82,7 @@ router.post("/verify", async (req, res) => {
   }
   const otp = await OTP.findOne({ user_id: user_details._id });
   if (!otp || !otp._id) {
-    return res.status(500).json({ error: responseMessages.internal_server });
+    return res.status(400).send({ message: "User not found or email is already verified." });
   }
 
   if ((new Date(otp.expiry)).getTime() < (new Date()).getTime()) {
@@ -95,7 +95,7 @@ router.post("/verify", async (req, res) => {
     await users.updateOne({ _id: otp.user_id }, { $set: { is_verified: true } })
     return res.status(200).send({ message: 'Email verified successfully!' });
   }
-  return res.status(400).send({ message: "Couldn't verify user" })
+  return res.status(400).send({ message: "Couldn't verify user, please enter valid OTP" })
 });
 
 
