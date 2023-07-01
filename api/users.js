@@ -101,44 +101,38 @@ router.post("/verify", async (req, res) => {
 router.post("/signin", async (req, res) => {
   const data = req.body;
   if (!data) {
-    return res.status(500).json({ error: errorMessages.internal_server })
+    return res.status(400).send({ message: "Data not received!" });
+  }
+  if (!data.email || !data.password) {
+    return res.status(400).send({ message: "Data not received properly." })
+  }
+
+  const user_details = await users.findOne({ email: data.email });
+  if (!user_details) return res.status(404).send({ message: "User doesn't exist1!" });
+
+  if (!user_details.is_verified) return res.status(404).send({ message: 'To sign in, please verify your email first.' });
+
+  const flag = await bcrypt.compare(data.password, user_details.password);
+
+  if (!flag) return res.status(404).send({ message: "User doesn't exist!" });
+  const id = user_details._id;
+  const user_name = user_details.user_name;
+  const expiry = (new Date()).getTime() + 10 * 60000;
+  const photo = await aws.getPreSignedUrl(user_details.profile_picture);
+
+  if (!photo) {
+    res.status(404).send({ message: "Some unexpected thing happened." });
   }
   const newToken = {
-    id: "",
-    user_name: "",
-    expiry: "",
+    id: id,
+    user_name: user_name,
+    expiry: expiry,
+    photo: photo
   };
-  if (data.email) {
-    const user_details = await users.findOne({ email: data.email });
-    if (!user_details) return res.status(404).send({ message: "User doesn't exist1!" });
-
-    if (!user_details.is_verified) return res.status(404).send({ message: 'To sign in, please verify your email first.' });
-
-    const flag = await bcrypt.compare(data.password, user_details.password);
-
-    if (!flag) return res.status(404).send({ message: "User doesn't exist!" });
-    newToken.id = user_details._id;
-    newToken.user_name = user_details.user_name;
-    const date = new Date();
-    newToken.expiry = new Date(date.getTime() + 10 * 60000);
-  }
-  else if (data.token) {
-    const token1 = jwt.verify(data.token, process.env.JWT_KEY);
-    if ((new Date(token1.expiry)).getTime() < (new Date()).getTime()) {
-      return res.status(400).send({ message: "Session Expired!!" });
-    }
-    newToken.id = token1.id;
-    newToken.user_name = token1.user_name;
-    const date = new Date();
-    newToken.expiry = new Date(date.getTime() + 10 * 60000);
-  }
-  else {
-    return res.status(500).json({ error: responseMessages.internal_server });
-  }
 
   const token = jwt.sign(newToken, process.env.JWT_KEY);
 
-  res.status(200).json({ token: token, data: { id: newToken.id, user_name: newToken.user_name, expiry: (new Date()).getTime() + 10 * 60000 } });
+  res.status(200).json({ token: token, data: newToken });
 })
 
 module.exports = router;
