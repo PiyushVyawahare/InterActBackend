@@ -98,7 +98,6 @@ router.post("/verify", async (req, res) => {
   return res.status(400).send({ message: "Couldn't verify user, please enter valid OTP" })
 });
 
-
 router.post("/signin", async (req, res) => {
   const data = req.body;
   if (!data) {
@@ -109,8 +108,8 @@ router.post("/signin", async (req, res) => {
     user_name: "",
     expiry: "",
   };
-  if (data.user_name) {
-    const user_details = await users.findOne({ user_name: data.user_name });
+  if (data.email) {
+    const user_details = await users.findOne({ email: data.email });
     if (!user_details) return res.status(404).send({ message: "User doesn't exist1!" });
 
     if (!user_details.is_verified) return res.status(404).send({ message: 'To sign in, please verify your email first.' });
@@ -139,7 +138,7 @@ router.post("/signin", async (req, res) => {
 
   const token = jwt.sign(newToken, process.env.JWT_KEY);
 
-  res.status(200).json({ token: token, data: { id: newToken.id, user_name: newToken.user_name } });
+  res.status(200).json({ token: token, data: { id: newToken.id, user_name: newToken.user_name, expiry: (new Date()).getTime() + 10 * 60000 } });
 })
 
 module.exports = router;
