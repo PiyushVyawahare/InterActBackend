@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
   const user_details = req.body;
 
   const is_duplicate = await users.findOne({
-    $or: [{ 'user_name': user_details.user_name }, { 'mobile': user_details.mobile }, { 'email': user_details.email }]
+    $or: [{ 'email': user_details.email }]
   });
 
   const title = 'InterAct: Verification Mail';
@@ -31,7 +31,9 @@ router.post('/', async (req, res) => {
   }
 
   if (user_details.profile_picture) {
-    const buffer = Buffer.from(user_details.profile_picture, "base64");
+    const base64_string = user_details.profile_picture;
+    const required_string = base64_string.split(',')[1];
+    const buffer = Buffer.from(required_string, "base64");
     const data = await aws.uploadToS3(user_details.user_name + "_profilePicture", buffer);
     if (data) user_details.profile_picture = user_details.user_name + "_profilePicture";
   }
@@ -49,7 +51,7 @@ router.post('/', async (req, res) => {
   const flag = generateAndMailOTP(user_response, title);
   if (flag) return res.status(200).send({ message: 'Email was sent to your registered email' });
   return res.status(400).send({ message: "Something went wrong!" })
-})
+});
 
 
 const generateAndMailOTP = async (user_details, title) => {
@@ -134,5 +136,29 @@ router.post("/signin", async (req, res) => {
 
   res.status(200).json({ token: token, data: newToken });
 })
+
+router.get('/search', async (req, res) => {
+  if (!req.query.data) {
+    return res.status(400).send({ message: "Please enter the data to get the users" });
+  }
+
+  const data = req.query.data;
+  const users_details = await users.find(
+    {
+      $or: [
+        {
+          user_name: new RegExp(data, 'i')
+        },
+        {
+          email: new RegExp(data, 'i')
+        },
+        {
+          mobile: new RegExp(data, 'i')
+        }]
+    }
+  ).select('user_name');
+
+  return res.status(200).json(users_details);
+});
 
 module.exports = router;
