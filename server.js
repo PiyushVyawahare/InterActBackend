@@ -8,6 +8,7 @@ const cors = require("cors");
 
 const { createServer } = require("http");
 const socketio = require("socket.io");
+const messages = require("./db/schema/messages");
 
 //--------------Requirements-----------//
 db.init();
@@ -23,14 +24,24 @@ const io = socketio(httpServer, {
   cors: {
     origin: "http://localhost:3000"
   }
-});
+}); 
 
 io.on("connection", (socket) => {
-  // socket.on("joinRoom", (obj) => {
-  //   console.log(obj);
-  // });
+  socket.on("joinRoom", (obj) => {
+    socket.join(obj.room_id);
+  });
 
-  socket.emit("foo", "Hello World");
+  socket.on("sendMessage", async (obj) => {
+    console.log(obj);
+    await messages.create({
+      message: obj.message,
+      room_id: obj.room_id,
+      created_at: new Date(),
+    });
+    io.to(obj.room_id).emit('newMessage', {
+      message: obj.message
+    });
+  })
 });
 
 //-------------routes------------------//
@@ -38,4 +49,4 @@ app.use("/users", Users);
 app.use("/rooms", Rooms);
 app.use("/invites", Invites);
 
-app.listen(4000);
+httpServer.listen(4000);

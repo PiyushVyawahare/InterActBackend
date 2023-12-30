@@ -10,6 +10,7 @@ const rooms = require("../db/schema/chat_rooms");
 const invites = require("../db/schema/invites");
 const chat_room_users = require("../db/schema/chat_room_users");
 const roles = require("../db/schema/roles");
+const messages = require("../db/schema/messages");
 
 const router = express.Router();
 
@@ -106,7 +107,6 @@ router.get("/", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     // console.log(token);
     // console.log(req.headers, token);
-    console.log(req);
     const token_details = jwt.verify(token, process.env.JWT_KEY);
 
     const user = await users.findOne({ _id: token_details.id });
@@ -188,9 +188,9 @@ router.get("/:id/messages", async (req, res) => {
 
     const room_id = req.params.id;
 
-    const messages = await messages.find({ room_id: room_id });
+    const messages_response = await messages.find({ room_id: room_id });
 
-    res.status(200).send(messages);
+    res.status(200).send(messages_response);
   } catch (error) {
     console.log("Error occured in get particular room details, Error:", error);
   }
