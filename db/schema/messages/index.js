@@ -7,12 +7,12 @@ const messageSchema = new Schema({
         required : true
     },
     room_id : {
-        type : Number,
+        type : String,
         required : true
     },
     created_by : {
-        type : Number,
-        required : true
+        type : String,
+        required : false
     },
     created_at: {
         type: Date,
