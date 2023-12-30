@@ -2,7 +2,6 @@
   "name": "interactbackend",
   "version": "1.0.0",
   "description": "This is the backend on the InterActProject",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,6 +27,6 @@
     "node-mailjet": "^3.3.13",
     "nodemon": "^2.0.22",
     "otp-generator": "^4.0.1",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.7.2"
   }
 }
