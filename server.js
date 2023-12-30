@@ -19,7 +19,11 @@ const corsOptions = { "Access-Control-Allow-Origin": "*" };
 app.use(cors(corsOptions));
 
 //-------------Socket-------------//
-const io = socketio(httpServer);
+const io = socketio(httpServer, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
 
 io.on("connection", (socket) => {
   // socket.on("joinRoom", (obj) => {
