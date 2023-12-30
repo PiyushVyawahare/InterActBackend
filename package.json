@@ -2,7 +2,6 @@
   "name": "interactbackend",
   "version": "1.0.0",
   "description": "This is the backend on the InterActProject",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,13 +18,15 @@
   "dependencies": {
     "aws-sdk": "^2.989.0",
     "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mailjet": "^0.0.1",
     "mongodb": "^5.5.0",
     "mongoose": "^7.2.0",
     "node-mailjet": "^3.3.13",
     "nodemon": "^2.0.22",
     "otp-generator": "^4.0.1",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.7.2"
   }
 }
