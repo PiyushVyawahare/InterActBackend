@@ -34,4 +34,4 @@ app.use("/users", Users);
 app.use("/rooms", Rooms);
 app.use("/invites", Invites);
 
-httpServer.listen(4000);
+app.listen(4000);
